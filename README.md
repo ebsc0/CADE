@@ -1,6 +1,6 @@
 <div align="center">
 
-cgrad: an automatic differentiation library built in C. Inspired by [tinygrad] (https://github.com/tinygrad/tinygrad) and [karpathy/micrograd](https://github.com/karpathy/micrograd).
+[cgrad](https://github.com/ebsc0/cgrad): an automatic differentiation library built in C. Inspired by [tinygrad](https://github.com/tinygrad/tinygrad) and [karpathy/micrograd](https://github.com/karpathy/micrograd).
 
 </div>
 
