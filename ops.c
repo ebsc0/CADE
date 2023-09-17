@@ -102,6 +102,13 @@ void ops_flatten(Matrix* matrix)
     matrix->row = 1;
 }
 
+void ops_reshape(Matrix* matrix, uint8 row, uint8 col)
+{
+    if(matrix->row*matrix->col != row*col) return;
+    matrix->row = row;
+    matrix->col = col;
+}
+
 bool ops_match(Matrix* a, Matrix* b)
 {
     if(a->col != b->col || a->row != b->row) return false;
@@ -114,4 +121,48 @@ bool ops_match(Matrix* a, Matrix* b)
         }
     }
     return true;
+}
+
+Matrix* ops_xcorrelation2d(Matrix* matrix, Matrix* kernel)
+{
+    // https://www.mathworks.com/help/signal/ref/xcorr2.html
+    Matrix* xcorrelation = matrix_create(matrix->row-kernel->row+1, matrix->col-kernel->col+1);
+    for(int xcorrelation_row = 0; xcorrelation_row < xcorrelation->row; xcorrelation_row++)
+    {
+        for(int xcorrelation_col = 0; xcorrelation_col < xcorrelation->col; xcorrelation_col++)
+        {
+            for(int kernel_row = 0; kernel_row < kernel->row; kernel_row++)
+            {
+                for(int kernel_col = 0; kernel_col < kernel->col; kernel_col++)
+                {
+                    xcorrelation->data[(xcorrelation_row*xcorrelation->col)+xcorrelation_col] += kernel->data[(kernel_row*kernel->col)+kernel_col] * matrix->data[((xcorrelation_row+kernel_row)*matrix->col)+(xcorrelation_col+kernel_col)];
+                }
+            }
+        }
+    }
+    return xcorrelation;
+}
+
+Matrix* ops_maxpool2d(Matrix* matrix, uint8 pool_row, uint8 pool_col)
+{
+    Matrix* maxpool = matrix_create(matrix->row-pool_row+1, matrix->col-pool_col+1);
+    for(int i = 0; i <  maxpool->row; i++)
+    {
+        for(int j = 0; j < maxpool->col; j++)
+        {
+            float32 max_value = 0;
+            for(int n = 0; n < pool_row; n++)
+            {
+                for(int m = 0; m < pool_col; m++)
+                {
+                    if(matrix->data[((i+n)*matrix->col)+(j+m)] > max_value)
+                    {
+                        max_value = matrix->data[((i+n)*matrix->col)+(j+m)];
+                        maxpool->data[(i*maxpool->col)+j] = max_value;
+                    }
+                }
+            }
+        }
+    }
+    return maxpool;
 }

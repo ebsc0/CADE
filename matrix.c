@@ -58,3 +58,14 @@ void matrix_ones(Matrix *matrix)
 {
     matrix_fill(matrix, 1);
 }
+
+void matrix_rand(Matrix* matrix, uint8 lower, uint8 upper)
+{
+    for(int i = 0; i < matrix->row; i++)
+    {
+        for(int j = 0; j < matrix->col; j++)
+        {
+            matrix->data[(i*matrix->col)+j] = (rand() % (upper - lower)) + lower;
+        }
+    }
+}
